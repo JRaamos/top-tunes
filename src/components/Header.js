@@ -21,9 +21,19 @@ class Header extends Component {
       <header
         data-testid="header-component"
       >
-        <Link data-testid="link-to-search" to="/search"> Search </Link>
+        <Link
+          data-testid="link-to-search"
+          to="/search"
+        >
+          Search
+        </Link>
         <br />
-        <Link data-testid="link-to-favorites" to="/favorites"> Favorites </Link>
+        <Link
+          data-testid="link-to-favorites"
+          to="/favorites"
+        >
+          Favorites
+        </Link>
         <br />
         <Link data-testid="link-to-profile" to="/profile"> Profile </Link>
         {
