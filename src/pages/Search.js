@@ -73,17 +73,16 @@ class Search extends Component {
           albuns.length === 0 ? (<p> Nenhum álbum foi encontrado </p>) : (
             <div>
               {
-                albuns.map(({ artistId, artistName, artworkUrl100,
+                albuns.map(({ artistName, artworkUrl100,
                   collectionName, collectionId,
-                }) => (
-                  <div key={ artistId }>
+                }, index) => (
+                  <div key={ index }>
                     <Link
                       data-testid={ `link-to-album-${collectionId}` }
                       to={ `/album/${collectionId}` }
                     >
-                      Album
+                      <img src={ artworkUrl100 } alt={ artistName } />
                     </Link>
-                    <img src={ artworkUrl100 } alt={ artistName } />
                     <h3>{artistName}</h3>
                     <h3>{collectionName}</h3>
                   </div>
