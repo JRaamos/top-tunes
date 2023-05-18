@@ -30,9 +30,14 @@ class Album extends Component {
             <p data-testid="artist-name">{albuns.artistName}</p>
             <p data-testid="album-name">{albuns.collectionName}</p>
           </div>
-          <MusicCard
-            albunsFilter={ albunsFilter }
-          />
+          {
+            albunsFilter.map((musicas) => (
+              <MusicCard
+                key={ musicas.trackId }
+                music={ musicas }
+              />
+            ))
+          }
         </div>
       </div>
 

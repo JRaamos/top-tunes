@@ -1,25 +1,24 @@
 import { Component } from 'react';
 import PropTypes from 'prop-types';
-import { addSong, getFavoriteSongs, removeSong } from '../services/favoriteSongsAPI';
+import {
+  addSong,
+  getFavoriteSongs,
+  removeSong,
+} from '../services/favoriteSongsAPI';
 import Carregando from './Carregando';
 
 class MusicCard extends Component {
   state = {
     carregando: false,
-    check: '',
-    elements: [],
-    favorites: '',
+    favorit: false,
+
   };
 
   async componentDidMount() {
-    const { favorites } = this.state;
-    const music = await getFavoriteSongs();
-    const checked = music.some((musicas) => musicas.trackId === favorites.trackId);
-    this.setState((prev) => ({
-      ...prev,
-      elements: music,
-      check: checked,
-    }));
+    const { music } = this.props;
+    const musica = await getFavoriteSongs();
+    const favorits = musica.some(({ trackId }) => trackId === music.trackId);
+    this.setState({ favorit: favorits });
   }
 
   favoritoSong = async (musica) => {
@@ -27,7 +26,7 @@ class MusicCard extends Component {
     await addSong(musica);
     this.setState(() => ({
       carregando: false,
-      favorites: musica,
+      favorit: 'checked',
     }));
   };
 
@@ -36,61 +35,55 @@ class MusicCard extends Component {
     await removeSong(musica);
     this.setState(() => ({
       carregando: false,
-      favorites: musica,
+      favorit: false,
     }));
   };
 
   render() {
-    const { albunsFilter } = this.props;
-    const { carregando } = this.state;
+    const { music: { artworkUrl60, artistName,
+      trackId, trackName, previewUrl } } = this.props;
+    const { music } = this.props;
+    const { carregando, favorit } = this.state;
 
     return (
       <div>
-        {carregando && <Carregando /> }
-        {
-          albunsFilter.map((element, index) => (
-            <div
-              key={ index }
-            >
-
-              <img
-                src={ element.artworkUrl60 }
-                alt={ element.artistName }
-              />
-
-              <label>
-                Favorito
-
-                <input
-                  onChange={ ({ target }) => (target.checked
-                    ? this.favoritoSong(element) : this.removeFavoritoSong(element)) }
-                  type="checkbox"
-                  data-testid={ `checkbox-music-${element.trackId}` }
-
-                />
-              </label>
-
-              <p>{element.trackName}</p>
-              <audio data-testid="audio-component" src={ element.previewUrl } controls>
-                <track kind="captions" />
-                O seu navegador não suporta o elemento
-                <code>audio</code>
-              </audio>
-            </div>
-
-          ))
-        }
+        {carregando && <Carregando />}
+        <div>
+          <img src={ artworkUrl60 } alt={ artistName } />
+          <label>
+            Favorito
+            <input
+              checked={ favorit }
+              onChange={ this.onChange }
+              type="checkbox"
+              data-testid={ `checkbox-music-${trackId}` }
+              onClick={ ({ target }) => (target.checked
+                ? this.favoritoSong(music)
+                : this.removeFavoritoSong(music)) }
+            />
+          </label>
+          <p>{trackName}</p>
+          <audio
+            data-testid="audio-component"
+            src={ previewUrl }
+            controls
+          >
+            <track kind="captions" />
+            O seu navegador não suporta o elemento
+            <code>audio</code>
+          </audio>
+        </div>
       </div>
     );
   }
 }
 MusicCard.propTypes = {
-  albunsFilter: PropTypes.arrayOf(PropTypes.shape({
+  music: PropTypes.shape({
     artistName: PropTypes.string.isRequired,
     artworkUrl60: PropTypes.string.isRequired,
     trackName: PropTypes.string.isRequired,
     previewUrl: PropTypes.string.isRequired,
     trackId: PropTypes.number.isRequired,
-  })).isRequired,
+  }).isRequired,
 };
 export default MusicCard;
