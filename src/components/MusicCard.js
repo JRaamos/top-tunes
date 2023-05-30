@@ -29,15 +29,15 @@ class MusicCard extends Component {
     }));
   };
 
-  removeFavoritoSong = async (musica) => {
+  removeFavoritoSong = (musica) => {
     this.setState({ carregando: true });
-    await removeSong(musica);
     const { handleRemoveFavorite } = this.props;
-    handleRemoveFavorite(musica);
-    this.setState(() => ({
+    removeSong(musica).then(() => {
+      handleRemoveFavorite(musica);
+    }).catch((error) => error).finally(() => this.setState(() => ({
       carregando: false,
       favorit: false,
-    }));
+    })));
   };
 
   render() {
