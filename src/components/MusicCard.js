@@ -11,7 +11,6 @@ class MusicCard extends Component {
   state = {
     carregando: false,
     favorit: false,
-
   };
 
   async componentDidMount() {
@@ -33,6 +32,8 @@ class MusicCard extends Component {
   removeFavoritoSong = async (musica) => {
     this.setState({ carregando: true });
     await removeSong(musica);
+    const { handleRemoveFavorite } = this.props;
+    handleRemoveFavorite(musica);
     this.setState(() => ({
       carregando: false,
       favorit: false,
@@ -51,15 +52,18 @@ class MusicCard extends Component {
         <div>
           <img src={ artworkUrl60 } alt={ artistName } />
           <label>
-            Favorito
+            Favorita
             <input
               checked={ favorit }
-              onChange={ this.onChange }
               type="checkbox"
               data-testid={ `checkbox-music-${trackId}` }
-              onClick={ ({ target }) => (target.checked
-                ? this.favoritoSong(music)
-                : this.removeFavoritoSong(music)) }
+              onChange={ ({ target }) => {
+                if (target.checked) {
+                  this.favoritoSong(music);
+                } else {
+                  this.removeFavoritoSong(music);
+                }
+              } }
             />
           </label>
           <p>{trackName}</p>
@@ -85,5 +89,6 @@ MusicCard.propTypes = {
     previewUrl: PropTypes.string.isRequired,
     trackId: PropTypes.number.isRequired,
   }).isRequired,
+  handleRemoveFavorite: PropTypes.func.isRequired,
 };
 export default MusicCard;

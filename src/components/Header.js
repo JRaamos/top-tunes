@@ -9,13 +9,12 @@ class Header extends Component {
     carregando: true,
   };
 
-  renderHeader = async () => {
+  async componentDidMount() {
     const result = await getUser();
     this.setState({ carregando: false, name: result.name });
-  };
+  }
 
   render() {
-    this.renderHeader();
     const { name, carregando } = this.state;
     return (
       <header
